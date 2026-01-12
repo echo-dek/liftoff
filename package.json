@@ -15,8 +15,8 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
-		"test:bdd": "npm run build && npm run preview & sleep 3 && cucumber-js && kill %1",
-		"test:bdd:headless": "npm run build && npm run preview & sleep 3 && cucumber-js && kill %1"
+		"test:bdd": "npm run build && npm run preview & sleep 3 && bunx cucumber-js && kill %1",
+		"test:bdd:headless": "npm run build && npm run preview & sleep 3 && bunx cucumber-js && kill %1"
 	},
 	"devDependencies": {
 		"@cucumber/cucumber": "^12.5.0",
@@ -43,6 +43,7 @@
 		"svelte-check": "^4.3.5",
 		"tailwindcss": "^4.1.18",
 		"ts-node": "^10.9.2",
+		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.53.0",
 		"vite": "^7.3.1",
