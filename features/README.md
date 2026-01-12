@@ -69,10 +69,10 @@ Step definitions have access to:
 
 ```bash
 # Run all BDD tests (builds app, starts server, runs tests)
-npm run test:bdd
+bun run test:bdd
 
 # Run with custom base URL
-BASE_URL=http://localhost:5173 npm run test:bdd
+BASE_URL=http://localhost:5173 bun run test:bdd
 ```
 
 ## Best Practices
