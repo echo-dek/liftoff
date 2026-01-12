@@ -24,12 +24,14 @@ The app organizes workouts into phases, days, and exercises, with configurable s
 ### Testing
 - `npm run test:unit` - Run Vitest unit tests (includes Svelte component tests)
 - `npm run test:e2e` - Run Playwright e2e tests
+- `npm run test:bdd` - Run Cucumber BDD tests (builds app, starts preview server, runs features)
 - `npm run test` - Run both unit and e2e tests
 
-The project uses a dual testing setup:
+The project uses a multi-layered testing setup:
 - **Unit tests**: Vitest with browser mode using Playwright for Svelte component tests (files: `**/*.svelte.{test,spec}.{js,ts}`)
 - **Server tests**: Vitest in Node environment (files: `**/*.{test,spec}.{js,ts}`, excluding Svelte test files)
 - **E2E tests**: Playwright tests in the `e2e/` directory
+- **BDD tests**: Cucumber/Gherkin feature files in the `features/` directory with Playwright step definitions
 
 ## Architecture
 
@@ -45,6 +47,9 @@ The project uses a dual testing setup:
   - `layout.css` - Global CSS (imported in layout)
 - `src/lib/` - Shared library code and assets
 - `e2e/` - Playwright end-to-end tests
+- `features/` - Cucumber BDD test files
+  - `*.feature` - Gherkin feature files describing user scenarios
+  - `step-definitions/` - TypeScript step definitions with Playwright integration
 
 ### Svelte 5 Features
 This project uses Svelte 5, which includes runes-based reactivity:
@@ -57,6 +62,11 @@ This project uses Svelte 5, which includes runes-based reactivity:
 - Component tests should use `render()` from `vitest-browser-svelte` and `page` from `vitest/browser`
 - E2E tests build and preview the app before running (see playwright.config.ts)
 - All tests require assertions (`expect.requireAssertions: true`)
+- BDD tests use Cucumber with Playwright integration
+  - Feature files use Gherkin syntax (Given/When/Then)
+  - Step definitions in `features/step-definitions/` use Playwright for browser automation
+  - Hooks file manages browser lifecycle (launch once, new context per scenario)
+  - Base URL defaults to `http://localhost:4173` (override with `BASE_URL` env var)
 
 ## Svelte MCP Server
 
