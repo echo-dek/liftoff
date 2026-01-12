@@ -8,7 +8,11 @@ Liftoff is a Progressive Web App (PWA) for tracking strength training progress. 
 
 The app organizes workouts into phases, days, and exercises, with configurable sets/reps and optional weight tracking.
 
-## Development Commands
+## Development Process
+
+### Behaviour Driven Development
+
+See the [Behaviour Driven Development Guide](Implementation.md).
 
 ### Running the Application
 - `bun run dev` - Start development server

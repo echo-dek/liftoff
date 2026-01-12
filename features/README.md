@@ -83,6 +83,10 @@ BASE_URL=http://localhost:5173 bun run test:bdd
 4. **Make steps reusable** - Write generic steps that can be used in multiple scenarios
 5. **Use scenario outlines for data-driven tests** - Test the same behavior with different inputs
 
+## Implementation
+
+See the [implementation guide](/features/Implementation.md)
+
 ## Example Scenario Outline
 
 ```gherkin
