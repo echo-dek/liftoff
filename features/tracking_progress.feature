@@ -27,3 +27,65 @@ Feature: Tracking Progress
     When 3 seconds have passed
     Then the "Overhead Press" page should animate away
     And I should see "Dumbbell Row" page
+
+  Scenario: Completing a day's worth of exercises
+    Given Liftoff is configured with the following plan:
+      | Phase         | Day           | Exercise          | Sets          | Reps          | Weights         |
+      | 1             | 1             | Overhead Press    | 3             | 5             | true            |
+      | 1             | 1             | Dumbbell Row      | 3             | 5             | true            |
+      | 1             | 2             | Dumbbell Squat    | 3             | 8             | true            |
+      | 1             | 2             | Lat Pulldown      | 3             | 5             | true            |
+    And I have not recorded any exercises
+    When I start Liftoff
+    And I press the "Start" button
+    And I tap "Overhead Press"
+    And I start the "Overhead Press" using 10kg of weights and complete 3 sets
+    Then I should see "Dumbbell Row" page
+    When I start the "Dumbbell Row" using 15kg of weights and complete 3 sets
+    Then I should see a congratulations message plus a summary of today's exercises
+
+  Scenario: Completing two day's worth of exercises
+    Given Liftoff is configured with the following plan:
+      | Phase         | Day           | Exercise          | Sets          | Reps          | Weights         |
+      | 1             | 1             | Overhead Press    | 3             | 5             | true            |
+      | 1             | 1             | Dumbbell Row      | 3             | 5             | true            |
+      | 1             | 2             | Dumbbell Squat    | 3             | 8             | true            |
+      | 1             | 2             | Lat Pulldown      | 3             | 5             | true            |
+    And yesterday I recorded my day 1 exercises
+    When I start Liftoff
+    And I press the "Start" button
+    Then I should see today's date plus the exercises for Phase 1 and Day 2
+    When I tap "Dumbbell Squat"
+    And I start the "Dumbbell Squat" using 20kg of weights and complete 3 sets
+    Then I should see "Lat Pulldown" page
+    When I start the "Lat Pulldown" using 40kg of weights and complete 3 sets
+    Then I should see a congratulations message plus a summary of today's exercises
+
+  Scenario: Continuing with a phase
+    Given Liftoff is configured with the following plan:
+      | Phase         | Day           | Exercise          | Sets          | Reps          | Weights         |
+      | 1             | 1             | Overhead Press    | 3             | 5             | true            |
+      | 1             | 2             | Dumbbell Row      | 3             | 5             | true            |
+      | 2             | 1             | Dumbbell Squat    | 3             | 8             | true            |
+      | 1             | 2             | Lat Pulldown      | 3             | 5             | true            |
+    And I have recorded exercises for phase 1, days 1 and 2
+    When I start Liftoff
+    And I press the "Start" button
+    Then I should see today's date plus a button to "Continue with Phase 1"
+    When I tap "Continue with Phase 1"
+    Then I should see the "Overhead Press" page
+
+  Scenario: Moving to the next phase
+    Given Liftoff is configured with the following plan:
+      | Phase         | Day           | Exercise          | Sets          | Reps          | Weights         |
+      | 1             | 1             | Overhead Press    | 3             | 5             | true            |
+      | 1             | 2             | Dumbbell Row      | 3             | 5             | true            |
+      | 2             | 1             | Dumbbell Squat    | 3             | 8             | true            |
+      | 1             | 2             | Lat Pulldown      | 3             | 5             | true            |
+    And I have recorded exercises for phase 1, days 1 and 2
+    When I start Liftoff
+    And I press the "Start" button
+    Then I should see today's date plus a button to "Start Phase 2"
+    When I tap "Start Phase 2"
+    Then I should see the "Dumbbell Squat" page
+

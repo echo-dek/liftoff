@@ -15,8 +15,8 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
-		"test:bdd": "npm run build && npm run preview & sleep 3 && bunx cucumber-js && kill %1",
-		"test:bdd:headless": "npm run build && npm run preview & sleep 3 && bunx cucumber-js && kill %1"
+		"test:bdd": "npm run build && vite preview --port 4173 & sleep 3 && bunx cucumber-js && kill %1",
+		"test:bdd:headless": "npm run build && vite preview --port 4173 & sleep 3 && bunx cucumber-js && kill %1"
 	},
 	"devDependencies": {
 		"@cucumber/cucumber": "^12.5.0",

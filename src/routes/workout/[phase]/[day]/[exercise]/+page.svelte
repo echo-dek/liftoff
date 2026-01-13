@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { storage } from '$lib/storage';
 	import type { Exercise } from '$lib/types';
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 
 	let phase = $derived(parseInt($page.params.phase));
 	let day = $derived(parseInt($page.params.day));
@@ -16,12 +16,20 @@
 	let showWeightInput = $state(true);
 	let weight = $state<number | null>(null);
 
-	onMount(() => {
+	// Load exercise data reactively when route params change
+	$effect(() => {
 		const exercises = storage.getExercisesForDay(phase, day);
-		exercise = exercises.find((ex) => ex.exercise === exerciseName);
+		const foundExercise = exercises.find((ex) => ex.exercise === exerciseName);
 
-		if (exercise) {
-			totalSets = exercise.sets;
+		// Only update if exercise actually changed
+		if (foundExercise?.exercise !== exercise?.exercise) {
+			// Reset state for new exercise
+			exercise = foundExercise;
+			totalSets = foundExercise?.sets ?? 0;
+			completedSets = 0;
+			isCompleted = false;
+			showWeightInput = true;
+			weight = null;
 		}
 	});
 
@@ -44,16 +52,18 @@
 		}
 	}
 
-	function navigateToNextExercise() {
+	async function navigateToNextExercise() {
 		const exercises = storage.getExercisesForDay(phase, day);
 		const currentIndex = exercises.findIndex((ex) => ex.exercise === exerciseName);
 
 		if (currentIndex < exercises.length - 1) {
 			const nextExercise = exercises[currentIndex + 1];
-			goto(`/workout/${phase}/${day}/${encodeURIComponent(nextExercise.exercise)}`);
+			// Invalidate all data to force fresh load
+			await invalidateAll();
+			await goto(`/workout/${phase}/${day}/${encodeURIComponent(nextExercise.exercise)}`, { replaceState: false });
 		} else {
-			// All exercises completed, return to workout day page
-			goto(`/workout/${phase}/${day}`);
+			// All exercises completed, go to completion page
+			await goto(`/workout/${phase}/${day}/complete`);
 		}
 	}
 
@@ -71,10 +81,10 @@
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4">
-	<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-2xl p-8">
+	<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-2xl p-8" data-exercise={exerciseName}>
 		<h1 class="text-3xl font-bold text-gray-800 mb-8">{exerciseName}</h1>
 
-		{#if showWeightInput && exercise?.weights}
+			{#if showWeightInput && exercise?.weights}
 			<div class="space-y-6">
 				<div>
 					<label for="weight-input" class="block text-lg font-semibold text-gray-700 mb-2">
