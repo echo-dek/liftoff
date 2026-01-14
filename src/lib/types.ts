@@ -2,6 +2,7 @@ export interface Exercise {
 	phase: number;
 	day: number;
 	exercise: string;
+	description?: string;
 	sets: number;
 	reps: number;
 	weights: boolean;
