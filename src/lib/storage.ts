@@ -1,4 +1,5 @@
 import type { Exercise, WorkoutSession } from './types';
+import defaultPlan from '$lib/assets/default_training_plan.json';
 
 const WORKOUT_PLAN_KEY = 'workoutPlan';
 const WORKOUT_HISTORY_KEY = 'workoutHistory';
@@ -7,7 +8,13 @@ export const storage = {
 	getWorkoutPlan(): Exercise[] {
 		if (typeof window === 'undefined') return [];
 		const data = localStorage.getItem(WORKOUT_PLAN_KEY);
-		return data ? JSON.parse(data) : [];
+		if (data) {
+			return JSON.parse(data);
+		}
+		// Initialize with default plan if none exists
+		const plan = defaultPlan as Exercise[];
+		this.setWorkoutPlan(plan);
+		return plan;
 	},
 
 	setWorkoutPlan(plan: Exercise[]): void {
