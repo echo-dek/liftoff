@@ -261,3 +261,49 @@ Then('I should see today\'s date plus a button to {string}', async function (but
 	// Note: Checking for today's date is flaky due to locale formatting and hydration timing
 	// The important part is that the correct phase choice button appears
 });
+
+// Step for recording exercises for a single day
+Given('I have recorded exercises for phase {int}, day {int}', async function (phase: number, day: number) {
+	// Create a workout history entry for the specified day
+	const yesterday = new Date();
+	yesterday.setDate(yesterday.getDate() - 1);
+
+	// Get exercises for specified phase and day from the workout plan
+	const exercises = this.workoutPlan.filter((ex: any) => ex.phase === phase && ex.day === day);
+
+	// Create workout history entries
+	const workoutHistory = exercises.map((ex: any) => ({
+		phase: phase,
+		day: day,
+		exercise: ex.exercise,
+		date: yesterday.toISOString(),
+		sets: ex.sets,
+		weight: 10 // Default weight
+	}));
+
+	// Store in localStorage
+	await this.page.evaluate((history) => {
+		localStorage.setItem('workoutHistory', JSON.stringify(history));
+	}, workoutHistory);
+});
+
+// Step for closing and reopening the app the next day
+When('I close Liftoff and open it again the next day', async function () {
+	// Simulate advancing to the next day by manipulating localStorage
+	// We'll update all workout history entries to be one day earlier
+	await this.page.evaluate(() => {
+		const history = localStorage.getItem('workoutHistory');
+		if (history) {
+			const workoutHistory = JSON.parse(history);
+			const updatedHistory = workoutHistory.map((session: any) => {
+				const date = new Date(session.date);
+				date.setDate(date.getDate() - 1);
+				return { ...session, date: date.toISOString() };
+			});
+			localStorage.setItem('workoutHistory', JSON.stringify(updatedHistory));
+		}
+	});
+
+	// Reload the page to simulate reopening the app
+	await this.page.goto(BASE_URL);
+});

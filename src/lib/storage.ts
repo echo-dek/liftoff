@@ -3,6 +3,7 @@ import defaultPlan from '$lib/assets/default_training_plan.json';
 
 const WORKOUT_PLAN_KEY = 'workoutPlan';
 const WORKOUT_HISTORY_KEY = 'workoutHistory';
+const CURRENT_DAY_OVERRIDE_KEY = 'currentDayOverride';
 
 export const storage = {
 	getWorkoutPlan(): Exercise[] {
@@ -45,11 +46,34 @@ export const storage = {
 		return plan.filter((exercise) => exercise.phase === phase && exercise.day === day);
 	},
 
+	setCurrentDayOverride(phase: number, day: number): void {
+		if (typeof window === 'undefined') return;
+		localStorage.setItem(CURRENT_DAY_OVERRIDE_KEY, JSON.stringify({ phase, day }));
+	},
+
+	getCurrentDayOverride(): { phase: number; day: number } | null {
+		if (typeof window === 'undefined') return null;
+		const data = localStorage.getItem(CURRENT_DAY_OVERRIDE_KEY);
+		return data ? JSON.parse(data) : null;
+	},
+
+	clearCurrentDayOverride(): void {
+		if (typeof window === 'undefined') return;
+		localStorage.removeItem(CURRENT_DAY_OVERRIDE_KEY);
+	},
+
 	getNextWorkout(): { phase: number; day: number; type: 'start' | 'continue' | 'next-phase' } | null {
 		const plan = this.getWorkoutPlan();
 		const history = this.getWorkoutHistory();
+		const override = this.getCurrentDayOverride();
 
 		if (plan.length === 0) return null;
+
+		// If there's an override, use it and clear it
+		if (override) {
+			this.clearCurrentDayOverride();
+			return { phase: override.phase, day: override.day, type: 'start' };
+		}
 
 		// If no history, start with phase 1, day 1
 		if (history.length === 0) {
@@ -87,5 +111,24 @@ export const storage = {
 			const nextDay = lastDay + 1;
 			return { phase: lastPhase, day: nextDay, type: 'start' };
 		}
+	},
+
+	getAllAvailableDays(): { phase: number; day: number; label: string }[] {
+		const plan = this.getWorkoutPlan();
+		const uniqueDays = new Map<string, { phase: number; day: number }>();
+
+		plan.forEach(exercise => {
+			const key = `${exercise.phase}-${exercise.day}`;
+			if (!uniqueDays.has(key)) {
+				uniqueDays.set(key, { phase: exercise.phase, day: exercise.day });
+			}
+		});
+
+		return Array.from(uniqueDays.values())
+			.sort((a, b) => {
+				if (a.phase !== b.phase) return a.phase - b.phase;
+				return a.day - b.day;
+			})
+			.map(d => ({ ...d, label: `Phase ${d.phase}, Day ${d.day}` }));
 	}
 };

@@ -89,3 +89,52 @@ Feature: Tracking Progress
     When I tap "Start Phase 2"
     Then I should see the "Dumbbell Squat" page
 
+  Scenario: Moving forwards through the plan
+    Given Liftoff is configured with the following plan:
+      | Phase         | Day           | Exercise          | Sets          | Reps          | Weights         |
+      | 1             | 1             | Overhead Press    | 3             | 5             | true            |
+      | 1             | 1             | Dumbbell Row      | 3             | 5             | true            |
+      | 1             | 2             | Dumbbell Squat    | 3             | 8             | true            |
+      | 1             | 2             | Lat Pulldown      | 3             | 5             | true            |
+      | 1             | 3             | Bench Press       | 3             | 5             | true            |
+      | 1             | 3             | Barbell Row       | 3             | 5             | true            |
+    And I have not recorded any exercises
+    When I start Liftoff
+    And I press the "Start" button
+    Then I should see today's date plus the exercises for Phase 1 and Day 1
+    When I tap "Navigate to Day 3"
+    Then I should see the exercises for Phase 1 and Day 3
+    When I tap "Bench Press"
+    And I start the "Bench Press" using 40kg of weights and complete 3 sets
+    Then I should see "Barbell Row" page
+    When I start the "Barbell Row" using 30kg of weights and complete 3 sets
+    Then I should see a congratulations message plus a summary of today's exercises
+    When I close Liftoff and open it again the next day
+    And I press the "Start" button
+    Then I should see the exercises for Phase 1 and Day 1
+
+  Scenario: Moving backwards through the plan
+    Given Liftoff is configured with the following plan:
+      | Phase         | Day           | Exercise          | Sets          | Reps          | Weights         |
+      | 1             | 1             | Overhead Press    | 3             | 5             | true            |
+      | 1             | 1             | Dumbbell Row      | 3             | 5             | true            |
+      | 1             | 2             | Dumbbell Squat    | 3             | 8             | true            |
+      | 1             | 2             | Lat Pulldown      | 3             | 5             | true            |
+      | 1             | 3             | Bench Press       | 3             | 5             | true            |
+      | 1             | 3             | Barbell Row       | 3             | 5             | true            |
+    And I have recorded exercises for phase 1, day 1
+    And I have recorded exercises for phase 1, day 2
+    When I start Liftoff
+    And I press the "Start" button
+    Then I should see today's date plus the exercises for Phase 1 and Day 3
+    When I tap "Navigate to Day 1"
+    Then I should see the exercises for Phase 1 and Day 1
+    When I tap "Overhead Press"
+    And I start the "Overhead Press" using 10kg of weights and complete 3 sets
+    Then I should see "Dumbbell Row" page
+    When I start the "Dumbbell Row" using 15kg of weights and complete 3 sets
+    Then I should see a congratulations message plus a summary of today's exercises
+    When I close Liftoff and open it again the next day
+    And I press the "Start" button
+    Then I should see the exercises for Phase 1 and Day 2
+
