@@ -1,14 +1,21 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { storage } from '$lib/storage';
 	import type { Exercise } from '$lib/types';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
 	let currentDate = $state(new Date().toLocaleDateString());
+	let availableDays = $state(storage.getAllAvailableDays());
 
 	function selectExercise(exercise: Exercise) {
 		goto(`/workout/${data.phase}/${data.day}/${encodeURIComponent(exercise.exercise)}`);
+	}
+
+	function navigateToDay(phase: number, day: number) {
+		storage.setCurrentDayOverride(phase, day);
+		goto(`/workout/${phase}/${day}`);
 	}
 </script>
 
@@ -17,6 +24,23 @@
 		<div class="mb-6">
 			<h1 class="text-3xl font-bold text-gray-800">Phase {data.phase}, Day {data.day}</h1>
 			<p class="text-gray-600 mt-2">{currentDate}</p>
+		</div>
+
+		<!-- Navigation Section -->
+		<div class="mb-6">
+			<div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+				<h3 class="text-sm font-semibold text-gray-600 mb-3">Navigate to a different day:</h3>
+				<div class="grid grid-cols-3 gap-2">
+					{#each availableDays as dayOption}
+						<button
+							onclick={() => navigateToDay(dayOption.phase, dayOption.day)}
+							class="py-2 px-3 text-sm rounded-lg transition-all duration-200 {dayOption.phase === data.phase && dayOption.day === data.day ? 'bg-blue-500 text-white font-semibold' : 'bg-white hover:bg-blue-50 text-gray-700 border border-gray-300'}"
+						>
+							Navigate to Day {dayOption.day}
+						</button>
+					{/each}
+				</div>
+			</div>
 		</div>
 
 		<div class="space-y-4">
