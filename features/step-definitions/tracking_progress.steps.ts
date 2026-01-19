@@ -84,6 +84,35 @@ Then(
 	}
 );
 
+Then(
+	'I should see the exercises for Phase {int} and Day {int}',
+	async function (phase: number, day: number) {
+		// Check that we're on the workout day page
+		await expect(
+			this.page.getByRole('heading', { name: `Phase ${phase}, Day ${day}` })
+		).toBeVisible();
+
+		// Check for exercises from the workout plan for this phase and day
+		const exercises = this.workoutPlan.filter(
+			(ex: { phase: number; day: number }) => ex.phase === phase && ex.day === day
+		);
+
+		// Wait for exercises to load from localStorage and hydration to complete
+		if (exercises.length > 0) {
+			const firstExerciseButton = this.page.locator(
+				`button:has(h3:text("${exercises[0].exercise}"))`
+			);
+			await expect(firstExerciseButton).toBeVisible({ timeout: 10000 });
+
+			// Verify all exercises are present
+			for (const exercise of exercises) {
+				const exerciseButton = this.page.locator(`button:has(h3:text("${exercise.exercise}"))`);
+				await expect(exerciseButton).toBeVisible();
+			}
+		}
+	}
+);
+
 When('I enter {int}kg for the weights I am using', async function (weight: number) {
 	const weightInput = this.page.getByLabel(/weight/i);
 	await weightInput.fill(weight.toString());
