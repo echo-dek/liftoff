@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolveRoute } from '$app/paths';
 	import { storage } from '$lib/storage';
 	import type { Exercise } from '$lib/types';
 	import type { PageData } from './$types';
@@ -10,12 +11,18 @@
 	let availableDays = $state(storage.getAllAvailableDays());
 
 	function selectExercise(exercise: Exercise) {
-		goto(`/workout/${data.phase}/${data.day}/${encodeURIComponent(exercise.exercise)}`);
+		goto(
+			resolveRoute('/workout/[phase]/[day]/[exercise]', {
+				phase: String(data.phase),
+				day: String(data.day),
+				exercise: encodeURIComponent(exercise.exercise)
+			})
+		);
 	}
 
 	function navigateToDay(phase: number, day: number) {
 		storage.setCurrentDayOverride(phase, day);
-		goto(`/workout/${phase}/${day}`);
+		goto(resolveRoute('/workout/[phase]/[day]', { phase: String(phase), day: String(day) }));
 	}
 </script>
 
@@ -31,7 +38,7 @@
 			<div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
 				<h3 class="mb-3 text-sm font-semibold text-gray-600">Navigate to a different day:</h3>
 				<div class="grid grid-cols-3 gap-2">
-					{#each availableDays as dayOption}
+					{#each availableDays as dayOption (`${dayOption.phase}-${dayOption.day}`)}
 						<button
 							onclick={() => navigateToDay(dayOption.phase, dayOption.day)}
 							class="rounded-lg px-3 py-2 text-sm transition-all duration-200 {dayOption.phase ===
@@ -48,7 +55,7 @@
 
 		<div class="space-y-4">
 			<h2 class="mb-4 text-xl font-semibold text-gray-700">Exercises</h2>
-			{#each data.exercises as exercise}
+			{#each data.exercises as exercise (exercise.exercise)}
 				<button
 					onclick={() => selectExercise(exercise)}
 					class="w-full rounded-lg border-2 border-gray-200 bg-white p-4 text-left transition-all duration-200 hover:border-blue-500 hover:shadow-lg"

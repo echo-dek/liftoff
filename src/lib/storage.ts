@@ -96,7 +96,6 @@ export const storage = {
 		const daysInLastPhase = new Set(
 			plan.filter((ex) => ex.phase === lastPhase).map((ex) => ex.day)
 		);
-		const maxDayInLastPhase = Math.max(...Array.from(daysInLastPhase));
 
 		// Check if we completed all days in the current phase
 		const completedDaysInPhase = new Set(

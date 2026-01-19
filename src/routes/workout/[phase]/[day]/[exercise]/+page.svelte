@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { goto, invalidateAll } from '$app/navigation';
+	import { resolveRoute } from '$app/paths';
+	import { page } from '$app/stores';
 	import { storage } from '$lib/storage';
 	import type { Exercise } from '$lib/types';
-	import { onMount, untrack } from 'svelte';
 
 	let phase = $derived(parseInt($page.params.phase ?? ''));
 	let day = $derived(parseInt($page.params.day ?? ''));
@@ -60,12 +60,22 @@
 			const nextExercise = exercises[currentIndex + 1];
 			// Invalidate all data to force fresh load
 			await invalidateAll();
-			await goto(`/workout/${phase}/${day}/${encodeURIComponent(nextExercise.exercise)}`, {
-				replaceState: false
-			});
+			await goto(
+				resolveRoute('/workout/[phase]/[day]/[exercise]', {
+					phase: String(phase),
+					day: String(day),
+					exercise: encodeURIComponent(nextExercise.exercise)
+				}),
+				{ replaceState: false }
+			);
 		} else {
 			// All exercises completed, go to completion page
-			await goto(`/workout/${phase}/${day}/complete`);
+			await goto(
+				resolveRoute('/workout/[phase]/[day]/complete', {
+					phase: String(phase),
+					day: String(day)
+				})
+			);
 		}
 	}
 

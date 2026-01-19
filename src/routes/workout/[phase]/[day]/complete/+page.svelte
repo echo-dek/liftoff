@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolveRoute } from '$app/paths';
 	import { page } from '$app/stores';
 	import { storage } from '$lib/storage';
 	import { onMount } from 'svelte';
@@ -21,7 +22,7 @@
 	});
 
 	function returnHome() {
-		goto('/');
+		goto(resolveRoute('/'));
 	}
 </script>
 

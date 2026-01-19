@@ -63,7 +63,9 @@ Then(
 		).toBeVisible();
 
 		// Check for exercises from the workout plan for this phase and day
-		const exercises = this.workoutPlan.filter((ex: any) => ex.phase === phase && ex.day === day);
+		const exercises = this.workoutPlan.filter(
+			(ex: { phase: number; day: number }) => ex.phase === phase && ex.day === day
+		);
 
 		// Wait for exercises to load from localStorage and hydration to complete
 		// Use the first exercise as a signal that everything is ready
@@ -96,7 +98,7 @@ When(/^I (?:press|tap) (?:the )?"([^"]*)"(?: button)?$/, async function (text: s
 	try {
 		await exerciseButton.first().waitFor({ state: 'visible', timeout: 5000 });
 		await exerciseButton.first().click();
-	} catch (e) {
+	} catch {
 		// Fall back to generic button search
 		const genericButton = this.page.locator('button', { hasText: text });
 		await genericButton.first().click();
@@ -183,7 +185,7 @@ When(
 			await startButton.click();
 			// Wait for tracking view
 			await expect(setCompleteButton).toBeVisible({ timeout: 5000 });
-		} catch (e) {
+		} catch {
 			// Weight input didn't appear - check if we're already in tracking mode
 			console.log(
 				`Failed to find weight input for ${exerciseName}, checking for Set Complete button`
@@ -235,10 +237,12 @@ Given('yesterday I recorded my day {int} exercises', async function (day: number
 	yesterday.setDate(yesterday.getDate() - 1);
 
 	// Get exercises for phase 1, specified day from the workout plan
-	const exercises = this.workoutPlan.filter((ex: any) => ex.phase === 1 && ex.day === day);
+	const exercises = this.workoutPlan.filter(
+		(ex: { phase: number; day: number }) => ex.phase === 1 && ex.day === day
+	);
 
 	// Create workout history entries
-	const workoutHistory = exercises.map((ex: any) => ({
+	const workoutHistory = exercises.map((ex: { exercise: string; sets: number }) => ({
 		phase: 1,
 		day: day,
 		exercise: ex.exercise,
@@ -264,15 +268,15 @@ Given(
 
 		// Get exercises for specified phase and days
 		const day1Exercises = this.workoutPlan.filter(
-			(ex: any) => ex.phase === phase && ex.day === day1
+			(ex: { phase: number; day: number }) => ex.phase === phase && ex.day === day1
 		);
 		const day2Exercises = this.workoutPlan.filter(
-			(ex: any) => ex.phase === phase && ex.day === day2
+			(ex: { phase: number; day: number }) => ex.phase === phase && ex.day === day2
 		);
 
 		// Create workout history entries
 		const workoutHistory = [
-			...day1Exercises.map((ex: any) => ({
+			...day1Exercises.map((ex: { exercise: string; sets: number }) => ({
 				phase: phase,
 				day: day1,
 				exercise: ex.exercise,
@@ -280,7 +284,7 @@ Given(
 				sets: ex.sets,
 				weight: 10
 			})),
-			...day2Exercises.map((ex: any) => ({
+			...day2Exercises.map((ex: { exercise: string; sets: number }) => ({
 				phase: phase,
 				day: day2,
 				exercise: ex.exercise,
@@ -318,10 +322,12 @@ Given(
 		yesterday.setDate(yesterday.getDate() - 1);
 
 		// Get exercises for specified phase and day from the workout plan
-		const exercises = this.workoutPlan.filter((ex: any) => ex.phase === phase && ex.day === day);
+		const exercises = this.workoutPlan.filter(
+			(ex: { phase: number; day: number }) => ex.phase === phase && ex.day === day
+		);
 
 		// Create workout history entries
-		const workoutHistory = exercises.map((ex: any) => ({
+		const workoutHistory = exercises.map((ex: { exercise: string; sets: number }) => ({
 			phase: phase,
 			day: day,
 			exercise: ex.exercise,
@@ -345,7 +351,7 @@ When('I close Liftoff and open it again the next day', async function () {
 		const history = localStorage.getItem('workoutHistory');
 		if (history) {
 			const workoutHistory = JSON.parse(history);
-			const updatedHistory = workoutHistory.map((session: any) => {
+			const updatedHistory = workoutHistory.map((session: { date: string }) => {
 				const date = new Date(session.date);
 				date.setDate(date.getDate() - 1);
 				return { ...session, date: date.toISOString() };

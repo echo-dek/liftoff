@@ -1,4 +1,4 @@
-import { Given, When, Then } from '@cucumber/cucumber';
+import { Given, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
 // Base URL for the application
@@ -25,7 +25,9 @@ Then('the default training plan should be configured', async function () {
 	expect(workoutPlan.length).toBeGreaterThan(0);
 
 	// Verify it contains expected structure (phase 1, day 1 exercises)
-	const phase1Day1Exercises = workoutPlan.filter((ex: any) => ex.phase === 1 && ex.day === 1);
+	const phase1Day1Exercises = workoutPlan.filter(
+		(ex: { phase: number; day: number }) => ex.phase === 1 && ex.day === 1
+	);
 	expect(phase1Day1Exercises.length).toBeGreaterThan(0);
 
 	// Verify exercises have required fields

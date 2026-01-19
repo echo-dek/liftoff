@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolveRoute } from '$app/paths';
 	import { page } from '$app/stores';
 	import { storage } from '$lib/storage';
 	import { onMount } from 'svelte';
@@ -18,11 +19,11 @@
 	});
 
 	function continueCurrentPhase() {
-		goto(`/workout/${currentPhase}/1`);
+		goto(resolveRoute('/workout/[phase]/[day]', { phase: String(currentPhase), day: '1' }));
 	}
 
 	function startNextPhase() {
-		goto(`/workout/${nextPhase}/1`);
+		goto(resolveRoute('/workout/[phase]/[day]', { phase: String(nextPhase), day: '1' }));
 	}
 </script>
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolveRoute } from '$app/paths';
 	import { storage } from '$lib/storage';
 	import { onMount } from 'svelte';
 
@@ -32,10 +33,15 @@
 		if (workoutType === 'next-phase' || workoutType === 'continue') {
 			// Pass the completed phase, not the next phase
 			const completedPhase = workoutType === 'next-phase' ? currentPhase - 1 : currentPhase;
-			goto(`/phase-choice?phase=${completedPhase}`);
+			goto(resolveRoute('/phase-choice') + `?phase=${completedPhase}`);
 		} else {
 			// Otherwise go directly to the workout
-			goto(`/workout/${currentPhase}/${currentDay}`);
+			goto(
+				resolveRoute('/workout/[phase]/[day]', {
+					phase: String(currentPhase),
+					day: String(currentDay)
+				})
+			);
 		}
 	}
 </script>
