@@ -1,21 +1,157 @@
 [
-  { "phase": 1, "day": 1, "exercise": "Overhead Press", "description": "", "sets": 3, "reps": 8, "weights": false},
-  { "phase": 1, "day": 1, "exercise": "Bodyweight Squat", "description": "", "sets": 3, "reps": 10, "weights": false},
-  { "phase": 1, "day": 1, "exercise": "Incline Pushup", "description": "", "sets": 3, "reps": 8, "weights": false},
-  { "phase": 1, "day": 1, "exercise": "Hip Hinge", "description": "", "sets": 3, "reps": 8, "weights": false},
-  { "phase": 1, "day": 1, "exercise": "Bent over Row", "description": "", "sets": 3, "reps": 8, "weights": false},
+	{
+		"phase": 1,
+		"day": 1,
+		"exercise": "Overhead Press",
+		"description": "",
+		"sets": 3,
+		"reps": 8,
+		"weights": false
+	},
+	{
+		"phase": 1,
+		"day": 1,
+		"exercise": "Bodyweight Squat",
+		"description": "",
+		"sets": 3,
+		"reps": 10,
+		"weights": false
+	},
+	{
+		"phase": 1,
+		"day": 1,
+		"exercise": "Incline Pushup",
+		"description": "",
+		"sets": 3,
+		"reps": 8,
+		"weights": false
+	},
+	{
+		"phase": 1,
+		"day": 1,
+		"exercise": "Hip Hinge",
+		"description": "",
+		"sets": 3,
+		"reps": 8,
+		"weights": false
+	},
+	{
+		"phase": 1,
+		"day": 1,
+		"exercise": "Bent over Row",
+		"description": "",
+		"sets": 3,
+		"reps": 8,
+		"weights": false
+	},
 
-  { "phase": 2, "day": 1, "exercise": "Dumbbell Squat", "description": "", "sets": 5, "reps": 5, "weights": true},
-  { "phase": 2, "day": 1, "exercise": "Dumbbell Bench", "description": "", "sets": 5, "reps": 5, "weights": true},
-  { "phase": 2, "day": 1, "exercise": "Dumbbell Row", "description": "", "sets": 3, "reps": 8, "weights": true},
-  { "phase": 2, "day": 2, "exercise": "Dumbbell RDL", "description": "", "sets": 5, "reps": 5, "weights": true},
-  { "phase": 2, "day": 2, "exercise": "Dumbbell OHP", "description": "", "sets": 3, "reps": 5, "weights": true},
-  { "phase": 2, "day": 2, "exercise": "Lat Pulldown", "description": "", "sets": 3, "reps": 8, "weights": true},
+	{
+		"phase": 2,
+		"day": 1,
+		"exercise": "Dumbbell Squat",
+		"description": "",
+		"sets": 5,
+		"reps": 5,
+		"weights": true
+	},
+	{
+		"phase": 2,
+		"day": 1,
+		"exercise": "Dumbbell Bench",
+		"description": "",
+		"sets": 5,
+		"reps": 5,
+		"weights": true
+	},
+	{
+		"phase": 2,
+		"day": 1,
+		"exercise": "Dumbbell Row",
+		"description": "",
+		"sets": 3,
+		"reps": 8,
+		"weights": true
+	},
+	{
+		"phase": 2,
+		"day": 2,
+		"exercise": "Dumbbell RDL",
+		"description": "",
+		"sets": 5,
+		"reps": 5,
+		"weights": true
+	},
+	{
+		"phase": 2,
+		"day": 2,
+		"exercise": "Dumbbell OHP",
+		"description": "",
+		"sets": 3,
+		"reps": 5,
+		"weights": true
+	},
+	{
+		"phase": 2,
+		"day": 2,
+		"exercise": "Lat Pulldown",
+		"description": "",
+		"sets": 3,
+		"reps": 8,
+		"weights": true
+	},
 
-  { "phase": 3, "day": 1, "exercise": "Barbell Squat", "description": "", "sets": 5, "reps": 5, "weights": true},
-  { "phase": 3, "day": 1, "exercise": "Bench", "description": "", "sets": 5, "reps": 5, "weights": true},
-  { "phase": 3, "day": 1, "exercise": "Bent over Row", "description": "", "sets": 3, "reps": 8, "weights": true},
-  { "phase": 3, "day": 2, "exercise": "Barbell Deadlift", "description": "", "sets": 3, "reps": 5, "weights": true},
-  { "phase": 3, "day": 2, "exercise": "Overhead Press", "description": "", "sets": 3, "reps": 5, "weights": true},
-  { "phase": 3, "day": 2, "exercise": "Lat Pulldown", "description": "", "sets": 3, "reps": 8, "weights": true}
+	{
+		"phase": 3,
+		"day": 1,
+		"exercise": "Barbell Squat",
+		"description": "",
+		"sets": 5,
+		"reps": 5,
+		"weights": true
+	},
+	{
+		"phase": 3,
+		"day": 1,
+		"exercise": "Bench",
+		"description": "",
+		"sets": 5,
+		"reps": 5,
+		"weights": true
+	},
+	{
+		"phase": 3,
+		"day": 1,
+		"exercise": "Bent over Row",
+		"description": "",
+		"sets": 3,
+		"reps": 8,
+		"weights": true
+	},
+	{
+		"phase": 3,
+		"day": 2,
+		"exercise": "Barbell Deadlift",
+		"description": "",
+		"sets": 3,
+		"reps": 5,
+		"weights": true
+	},
+	{
+		"phase": 3,
+		"day": 2,
+		"exercise": "Overhead Press",
+		"description": "",
+		"sets": 3,
+		"reps": 5,
+		"weights": true
+	},
+	{
+		"phase": 3,
+		"day": 2,
+		"exercise": "Lat Pulldown",
+		"description": "",
+		"sets": 3,
+		"reps": 8,
+		"weights": true
+	}
 ]

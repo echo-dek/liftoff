@@ -62,7 +62,11 @@ export const storage = {
 		localStorage.removeItem(CURRENT_DAY_OVERRIDE_KEY);
 	},
 
-	getNextWorkout(): { phase: number; day: number; type: 'start' | 'continue' | 'next-phase' } | null {
+	getNextWorkout(): {
+		phase: number;
+		day: number;
+		type: 'start' | 'continue' | 'next-phase';
+	} | null {
 		const plan = this.getWorkoutPlan();
 		const history = this.getWorkoutHistory();
 		const override = this.getCurrentDayOverride();
@@ -85,16 +89,18 @@ export const storage = {
 		const { phase: lastPhase, day: lastDay } = latestSession;
 
 		// Get all unique phases and days from the plan
-		const planPhases = new Set(plan.map(ex => ex.phase));
+		const planPhases = new Set(plan.map((ex) => ex.phase));
 		const maxPhase = Math.max(...Array.from(planPhases));
 
 		// Get days for the last completed phase
-		const daysInLastPhase = new Set(plan.filter(ex => ex.phase === lastPhase).map(ex => ex.day));
+		const daysInLastPhase = new Set(
+			plan.filter((ex) => ex.phase === lastPhase).map((ex) => ex.day)
+		);
 		const maxDayInLastPhase = Math.max(...Array.from(daysInLastPhase));
 
 		// Check if we completed all days in the current phase
 		const completedDaysInPhase = new Set(
-			history.filter(s => s.phase === lastPhase).map(s => s.day)
+			history.filter((s) => s.phase === lastPhase).map((s) => s.day)
 		);
 
 		if (completedDaysInPhase.size === daysInLastPhase.size) {
@@ -117,7 +123,7 @@ export const storage = {
 		const plan = this.getWorkoutPlan();
 		const uniqueDays = new Map<string, { phase: number; day: number }>();
 
-		plan.forEach(exercise => {
+		plan.forEach((exercise) => {
 			const key = `${exercise.phase}-${exercise.day}`;
 			if (!uniqueDays.has(key)) {
 				uniqueDays.set(key, { phase: exercise.phase, day: exercise.day });
@@ -129,6 +135,6 @@ export const storage = {
 				if (a.phase !== b.phase) return a.phase - b.phase;
 				return a.day - b.day;
 			})
-			.map(d => ({ ...d, label: `Phase ${d.phase}, Day ${d.day}` }));
+			.map((d) => ({ ...d, label: `Phase ${d.phase}, Day ${d.day}` }));
 	}
 };

@@ -40,16 +40,18 @@
 	}
 </script>
 
-<div class="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-500 to-purple-600">
-	<div class="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full text-center">
-		<h1 class="text-4xl font-bold text-gray-800 mb-4">Liftoff</h1>
-		<p class="text-lg text-gray-600 mb-2">Track your strength training progress</p>
+<div
+	class="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 p-4"
+>
+	<div class="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-2xl">
+		<h1 class="mb-4 text-4xl font-bold text-gray-800">Liftoff</h1>
+		<p class="mb-2 text-lg text-gray-600">Track your strength training progress</p>
 
-		<p class="text-sm text-gray-500 mb-8">{currentDate}</p>
+		<p class="mb-8 text-sm text-gray-500">{currentDate}</p>
 
 		<button
 			onclick={handleStart}
-			class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-colors duration-200 shadow-lg hover:shadow-xl"
+			class="rounded-lg bg-blue-600 px-8 py-4 text-xl font-bold text-white shadow-lg transition-colors duration-200 hover:bg-blue-700 hover:shadow-xl"
 		>
 			{buttonText}
 		</button>

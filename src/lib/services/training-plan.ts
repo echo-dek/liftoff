@@ -49,5 +49,5 @@ export function saveTrainingPlan(plan: Exercise[]): void {
  * Gets exercises for a specific phase and day
  */
 export function getExercisesForDay(plan: Exercise[], phase: number, day: number): Exercise[] {
-	return plan.filter(ex => ex.phase === phase && ex.day === day);
+	return plan.filter((ex) => ex.phase === phase && ex.day === day);
 }

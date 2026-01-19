@@ -5,9 +5,9 @@
 	import type { Exercise } from '$lib/types';
 	import { onMount, untrack } from 'svelte';
 
-	let phase = $derived(parseInt($page.params.phase));
-	let day = $derived(parseInt($page.params.day));
-	let exerciseName = $derived(decodeURIComponent($page.params.exercise));
+	let phase = $derived(parseInt($page.params.phase ?? ''));
+	let day = $derived(parseInt($page.params.day ?? ''));
+	let exerciseName = $derived(decodeURIComponent($page.params.exercise ?? ''));
 
 	let exercise = $state<Exercise | undefined>(undefined);
 	let totalSets = $state(0);
@@ -60,7 +60,9 @@
 			const nextExercise = exercises[currentIndex + 1];
 			// Invalidate all data to force fresh load
 			await invalidateAll();
-			await goto(`/workout/${phase}/${day}/${encodeURIComponent(nextExercise.exercise)}`, { replaceState: false });
+			await goto(`/workout/${phase}/${day}/${encodeURIComponent(nextExercise.exercise)}`, {
+				replaceState: false
+			});
 		} else {
 			// All exercises completed, go to completion page
 			await goto(`/workout/${phase}/${day}/complete`);
@@ -81,13 +83,13 @@
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4">
-	<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-2xl p-8" data-exercise={exerciseName}>
-		<h1 class="text-3xl font-bold text-gray-800 mb-8">{exerciseName}</h1>
+	<div class="mx-auto max-w-2xl rounded-lg bg-white p-8 shadow-2xl" data-exercise={exerciseName}>
+		<h1 class="mb-8 text-3xl font-bold text-gray-800">{exerciseName}</h1>
 
-			{#if showWeightInput && exercise?.weights}
+		{#if showWeightInput && exercise?.weights}
 			<div class="space-y-6">
 				<div>
-					<label for="weight-input" class="block text-lg font-semibold text-gray-700 mb-2">
+					<label for="weight-input" class="mb-2 block text-lg font-semibold text-gray-700">
 						Weight (kg)
 					</label>
 					<input
@@ -96,7 +98,7 @@
 						bind:value={weight}
 						min="0"
 						step="0.5"
-						class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-lg"
+						class="w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-lg focus:border-blue-500 focus:outline-none"
 						placeholder="Enter weight"
 					/>
 				</div>
@@ -104,7 +106,7 @@
 				<button
 					onclick={startExercise}
 					disabled={weight === null || weight <= 0}
-					class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold py-4 px-8 rounded-lg text-xl transition-colors duration-200 shadow-lg hover:shadow-xl"
+					class="w-full rounded-lg bg-blue-600 px-8 py-4 text-xl font-bold text-white shadow-lg transition-colors duration-200 hover:bg-blue-700 hover:shadow-xl disabled:cursor-not-allowed disabled:bg-gray-400"
 				>
 					Start {exerciseName}
 				</button>
@@ -112,7 +114,7 @@
 		{:else}
 			<div class="space-y-8">
 				<div class="text-center">
-					<p class="text-xl text-gray-700 mb-4">{setsRemainingText()}</p>
+					<p class="mb-4 text-xl text-gray-700">{setsRemainingText()}</p>
 
 					{#if exercise}
 						<p class="text-lg text-gray-600">
@@ -127,13 +129,13 @@
 				{#if !isCompleted}
 					<button
 						onclick={completeSet}
-						class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-6 px-8 rounded-lg text-2xl transition-colors duration-200 shadow-lg hover:shadow-xl"
+						class="w-full rounded-lg bg-green-600 px-8 py-6 text-2xl font-bold text-white shadow-lg transition-colors duration-200 hover:bg-green-700 hover:shadow-xl"
 					>
 						Set Complete
 					</button>
 				{:else}
-					<div class="text-center py-8 animate-bounce celebration">
-						<div class="text-6xl mb-4">🎉</div>
+					<div class="celebration animate-bounce py-8 text-center">
+						<div class="mb-4 text-6xl">🎉</div>
 						<p class="text-2xl font-bold text-green-600">{exerciseName} completed!</p>
 					</div>
 				{/if}

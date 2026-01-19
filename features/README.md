@@ -50,18 +50,19 @@ import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
 Given('I am on the home page', async function () {
-  await this.page.goto('http://localhost:4173');
+	await this.page.goto('http://localhost:4173');
 });
 
 Then('I should see a heading', async function () {
-  const heading = this.page.locator('h1');
-  await expect(heading).toBeVisible();
+	const heading = this.page.locator('h1');
+	await expect(heading).toBeVisible();
 });
 ```
 
 ### Available Context
 
 Step definitions have access to:
+
 - `this.page` - Playwright Page instance
 - `this.context` - Playwright BrowserContext instance
 

@@ -1,6 +1,7 @@
 # Implementing a feature
 
 Key principles:
+
 - Do not write more code than is required - YAGNI (you aren't going to need it)
 - Start from the "outside" of the system (the user's view) and work inwards (the database or other system components)
 - Use the test-first development to drive the design
@@ -18,7 +19,7 @@ Key principles:
   - Use an actual browser so the feature matches what the user will experience
   - The step will fail, as there is no implementation yet
 - Build the implementation one layer at a time
-  - Start with the user-interface, using the earlier plan 
+  - Start with the user-interface, using the earlier plan
   - If a static user-interface fulfils the feature, stop here
   - Otherwise implement the layers of the system using a test-first approach to drive the design of the API between the different layers
   - Repeat until the step passes
@@ -30,63 +31,70 @@ Key principles:
 ### Critical Bugs and Solutions
 
 #### 1. Gherkin Table Header Case Sensitivity (Most Critical)
+
 **Problem**: Cucumber's `dataTable.hashes()` returns objects with keys matching the exact table header names. If your Gherkin table has capitalized headers (`Phase`, `Day`) but your code accesses lowercase properties (`row.phase`, `row.day`), all values will be `undefined`.
 
 **Symptom**: Tests appear to run but data is empty/null, localStorage contains invalid data, features don't render.
 
 **Solution**: Match interface property names to table headers exactly:
+
 ```typescript
 interface ExerciseConfig {
-  Phase: string;  // Capitalized to match table header
-  Day: string;
-  Exercise: string;
-  // ...
+	Phase: string; // Capitalized to match table header
+	Day: string;
+	Exercise: string;
+	// ...
 }
 
-const workoutPlan = rows.map(row => ({
-  phase: parseInt(row.Phase),  // Access with capital letter
-  day: parseInt(row.Day),
-  exercise: row.Exercise
+const workoutPlan = rows.map((row) => ({
+	phase: parseInt(row.Phase), // Access with capital letter
+	day: parseInt(row.Day),
+	exercise: row.Exercise
 }));
 ```
 
 **Prevention**: When using data tables, immediately log the parsed data to verify it's being read correctly.
 
 #### 2. Cucumber TypeScript Loading Configuration
+
 **Problem**: Cucumber doesn't load TypeScript step definitions by default. Using `--loader` flag is deprecated in newer Node versions.
 
 **Solution**:
+
 1. Install `tsx` for TypeScript support: `bun add -d tsx`
 2. Create `cucumber.cjs` (NOT `.js`) with CommonJS exports:
+
 ```javascript
 module.exports = {
-  default: {
-    requireModule: ['tsx/cjs'],
-    require: [
-      'features/step-definitions/hooks.ts',
-      'features/step-definitions/*.steps.ts'
-    ],
-    format: ['progress'],
-    formatOptions: { snippetInterface: 'async-await' }
-  }
+	default: {
+		requireModule: ['tsx/cjs'],
+		require: ['features/step-definitions/hooks.ts', 'features/step-definitions/*.steps.ts'],
+		format: ['progress'],
+		formatOptions: { snippetInterface: 'async-await' }
+	}
 };
 ```
+
 3. Use explicit file paths in `require` array, not glob patterns
 
 #### 3. SvelteKit Static Adapter with Dynamic Routes
+
 **Problem**: `@sveltejs/adapter-static` fails to build when you have dynamic routes (e.g., `/workout/[phase]/[day]`) because it can't pre-render them.
 
 **Solution**: Configure fallback for SPA mode in `svelte.config.js`:
+
 ```javascript
 adapter: adapter({
-  fallback: 'index.html'  // Essential for client-side routing
-})
+	fallback: 'index.html' // Essential for client-side routing
+});
 ```
 
 #### 4. localStorage in SvelteKit with SSR
+
 **Problem**: Page `load` functions run at build time during static generation. localStorage doesn't exist at build time, causing empty data.
 
 **Solution**: Disable SSR for pages that need client-side-only features:
+
 ```typescript
 // +page.ts
 export const ssr = false;  // Critical for localStorage access
@@ -98,11 +106,13 @@ export const load: PageLoad = ({ params }) => {
 ```
 
 #### 5. Playwright Strict Mode Violations
+
 **Problem**: `getByText('message')` fails when multiple elements contain that text.
 
 **Symptom**: "strict mode violation: resolved to 2 elements"
 
 **Solution**: Use more specific selectors:
+
 ```typescript
 // Instead of:
 await expect(this.page.getByText('completed')).toBeVisible();
@@ -114,27 +124,36 @@ await expect(this.page.locator('.celebration').getByText('completed')).toBeVisib
 ### Debugging Techniques That Worked
 
 #### 1. Screenshots at Critical Points
+
 Add screenshot capture in step definitions to see actual browser state:
+
 ```typescript
 await this.page.screenshot({ path: `/tmp/debug-step.png` });
 ```
+
 Then use Read tool to view the screenshot and understand what's actually rendering.
 
 #### 2. Console Logging Test Data
+
 Log parsed data immediately after extraction:
+
 ```typescript
 console.log(`Stored workout plan:`, JSON.stringify(workoutPlan, null, 2));
 ```
+
 This revealed the table header case sensitivity bug instantly.
 
 #### 3. Checking Element Counts
+
 Before expecting visibility, check if elements exist:
+
 ```typescript
 const count = await exerciseButton.count();
 console.log(`Found ${count} buttons`);
 ```
 
 #### 4. Progressive Verification
+
 Don't trust that tests pass without verification. The test for exercises "passed" but was actually skipping verification because `if (exercises.length > 0)` was false!
 
 ### Common Pitfalls to Avoid
@@ -148,17 +167,20 @@ Don't trust that tests pass without verification. The test for exercises "passed
 ### Best Practices Discovered
 
 #### Test Step Organization
+
 1. **Given steps**: Always navigate to page first, THEN set localStorage. Order matters in SPAs.
 2. **When steps**: Use smart selectors that try exercise-specific patterns first, then fall back to generic
 3. **Then steps**: Wait for first element with timeout, then check others without timeout
 
 #### Svelte 5 + SvelteKit Patterns
+
 1. Use `$props()` to receive page data from load function
 2. Use `$derived` for computed values
 3. Use `$state` for local reactive state
 4. Always use `ssr = false` for pages with client-only features (localStorage, browser APIs)
 
 #### BDD Process Improvements
+
 1. **Start with data flow verification** - Log what data is being created/stored/loaded
 2. **Use screenshots liberally** - They reveal UI issues instantly
 3. **Test incrementally** - Don't write all steps at once
@@ -175,9 +197,11 @@ The Ralph Loop methodology proved highly effective:
 5. **Data-first debugging** - When features don't work, verify the data flow before blaming the UI
 
 **Key Ralph Loop Pattern**:
+
 - Run test → See failure → Add logging/screenshots → Understand root cause → Fix → Repeat
 
 The "button not rendering" mystery that persisted through many iterations was solved by:
+
 1. Adding screenshots (showed no buttons rendered)
 2. Adding data logging (showed `exercises.length === 0`)
 3. Tracing back to table parsing (showed all `null` values)
@@ -189,6 +213,7 @@ This demonstrates how Ralph Loop forces you to dig deeper with each iteration un
 ### Quick Reference Checklist
 
 Before starting a new feature:
+
 - [ ] Create feature file with scenarios
 - [ ] Set up Cucumber config (cucumber.cjs with tsx)
 - [ ] Create hooks.ts for browser lifecycle
@@ -201,4 +226,3 @@ Before starting a new feature:
 - [ ] Use specific selectors to avoid strict mode violations
 - [ ] Verify test data flow before implementing features
 - [ ] Trust but verify - ensure passing tests actually check something
-

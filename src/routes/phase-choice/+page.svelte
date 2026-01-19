@@ -11,7 +11,7 @@
 
 	onMount(() => {
 		const plan = storage.getWorkoutPlan();
-		const phases = new Set(plan.map(ex => ex.phase));
+		const phases = new Set(plan.map((ex) => ex.phase));
 		const maxPhase = Math.max(...Array.from(phases));
 		hasNextPhase = currentPhase < maxPhase;
 		nextPhase = currentPhase + 1;
@@ -26,15 +26,17 @@
 	}
 </script>
 
-<div class="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-500 to-purple-600">
-	<div class="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full text-center">
-		<h1 class="text-3xl font-bold text-gray-800 mb-4">Choose Your Path</h1>
-		<p class="text-sm text-gray-500 mb-8">{currentDate}</p>
+<div
+	class="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 p-4"
+>
+	<div class="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-2xl">
+		<h1 class="mb-4 text-3xl font-bold text-gray-800">Choose Your Path</h1>
+		<p class="mb-8 text-sm text-gray-500">{currentDate}</p>
 
 		<div class="space-y-4">
 			<button
 				onclick={continueCurrentPhase}
-				class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-colors duration-200 shadow-lg hover:shadow-xl"
+				class="w-full rounded-lg bg-blue-600 px-8 py-4 text-xl font-bold text-white shadow-lg transition-colors duration-200 hover:bg-blue-700 hover:shadow-xl"
 			>
 				Continue with Phase {currentPhase}
 			</button>
@@ -42,7 +44,7 @@
 			{#if hasNextPhase}
 				<button
 					onclick={startNextPhase}
-					class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-colors duration-200 shadow-lg hover:shadow-xl"
+					class="w-full rounded-lg bg-green-600 px-8 py-4 text-xl font-bold text-white shadow-lg transition-colors duration-200 hover:bg-green-700 hover:shadow-xl"
 				>
 					Start Phase {nextPhase}
 				</button>

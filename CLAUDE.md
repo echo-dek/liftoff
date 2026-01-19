@@ -15,23 +15,27 @@ The app organizes workouts into phases, days, and exercises, with configurable s
 See the [Behaviour Driven Development Guide](Implementation.md).
 
 ### Running the Application
+
 - `bun run dev` - Start development server
 - `bun run build` - Build for production (uses static adapter)
 - `bun run preview` - Preview production build locally
 
 ### Code Quality
+
 - `bun run check` - Type check with svelte-check
 - `bun run check:watch` - Type check in watch mode
 - `bun run format` - Format code with Prettier
 - `bun run lint` - Run Prettier and ESLint checks
 
 ### Testing
+
 - `bun run test:unit` - Run Vitest unit tests (includes Svelte component tests)
 - `bun run test:e2e` - Run Playwright e2e tests
 - `bun run test:bdd` - Run Cucumber BDD tests (builds app, starts preview server, runs features)
 - `bun run test` - Run both unit and e2e tests
 
 The project uses a multi-layered testing setup:
+
 - **Unit tests**: Vitest with browser mode using Playwright for Svelte component tests (files: `**/*.svelte.{test,spec}.{js,ts}`)
 - **Server tests**: Vitest in Node environment (files: `**/*.{test,spec}.{js,ts}`, excluding Svelte test files)
 - **E2E tests**: Playwright tests in the `e2e/` directory
@@ -40,11 +44,13 @@ The project uses a multi-layered testing setup:
 ## Architecture
 
 ### Build Configuration
+
 - **Adapter**: Static adapter (`@sveltejs/adapter-static`) for PWA deployment
 - **Styling**: Tailwind CSS 4 via Vite plugin
 - **TypeScript**: Full TypeScript support with svelte-check
 
 ### Project Structure
+
 - `src/routes/` - SvelteKit routes (file-based routing)
   - `+layout.svelte` - Root layout with favicon and global styles
   - `+page.svelte` - Homepage
@@ -56,12 +62,15 @@ The project uses a multi-layered testing setup:
   - `step-definitions/` - TypeScript step definitions with Playwright integration
 
 ### Svelte 5 Features
+
 This project uses Svelte 5, which includes runes-based reactivity:
+
 - Use `$props()` for component props (not `export let`)
 - Use `$state()` for reactive state
 - Use `{@render children()}` for slot content
 
 ### Testing Notes
+
 - Svelte component tests use `vitest-browser-svelte` and run in a real browser via Playwright
 - Component tests should use `render()` from `vitest-browser-svelte` and `page` from `vitest/browser`
 - E2E tests build and preview the app before running (see playwright.config.ts)
